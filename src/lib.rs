@@ -29,6 +29,11 @@ pub mod easy_hasher {
 
     /* Raw data hashing functions */
 
+    /// MD5 raw data hashing function
+    pub fn md5(d: _Data) -> _Data {
+        md5::compute(d).0.to_vec()
+    }
+
     /// SHA-1 raw data hashing function
     pub fn sha1(d: _Data) -> _Data {
         sha(d)
@@ -56,27 +61,33 @@ pub mod easy_hasher {
 
     /* String hashing functions */
 
+    /// MD5 string hashing function
+    pub fn string_md5(s: String) -> _Data {
+        md5(s.into_bytes())
+    }
+
+    /// SHA-1 string hashing function
     pub fn string_sha1(s: String) -> _Data {
-        sha1(s.as_bytes().to_vec())
+        sha1(s.into_bytes())
     }
 
     /// SHA-224 string hashing function
     pub fn string_sha224(s: String) -> _Data {
-        sha224(s.as_bytes().to_vec())
+        sha224(s.into_bytes())
     }
 
     /// SHA-256 string hashing function
     pub fn string_sha256(s: String) -> _Data {
-        sha256(s.as_bytes().to_vec())
+        sha256(s.into_bytes())
     }
 
     /// SHA-384 string hashing function
     pub fn string_sha384(s: String) -> _Data {
-        sha384(s.as_bytes().to_vec())
+        sha384(s.into_bytes())
     }
 
     /// SHA-512 string hashing function
     pub fn string_sha512(s: String) -> _Data {
-        sha512(s.as_bytes().to_vec())
+        sha512(s.into_bytes())
     }
 }
