@@ -28,9 +28,9 @@ extern crate easy_hasher;
 use easy_hasher::easy_hasher::*;
 
 fn main() {
-let string = "example string".to_string();
-let hash = string_sha256(string.clone());
+	let string = "example string".to_string();
+	let hash = string_sha256(string.clone());
 
-println!("sha256({}) = {}", string, hex_string(hash));
+	println!("sha256({}) = {}", string, hex_string(hash));
 }
 ```
