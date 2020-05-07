@@ -27,7 +27,34 @@ pub mod easy_hasher {
         hasher.digest().bytes().to_vec()
     }
 
+    /// CRC8 raw data hashing function, based on polynomial and initial value
+    pub fn param_crc8(data: _Data, poly: u8, init: u8) -> _Data {
+        let mut crc8 = crc8::Crc8::create_msb(poly);
+        vec![crc8.calc(data.as_slice(), data.len() as i32, init)]
+    }
+
     /* Raw data hashing functions */
+
+    /// CRC8 raw data hashing function\
+    /// poly = 0x07, init = 0x00
+    pub fn crc8(d: _Data) -> _Data {
+        param_crc8(d, 0x7, 0x0)
+    }
+
+    /// CRC16/ARC raw data hashing function
+    pub fn crc16(d: _Data) -> _Data {
+        crc16::State::<crc16::ARC>::calculate(d.as_slice()).to_be_bytes().to_vec()
+    }
+
+    /// CRC32 raw data hashing function
+    pub fn crc32(d: _Data) -> _Data {
+        crc::crc32::checksum_ieee(d.as_slice()).to_be_bytes().to_vec()
+    }
+
+    /// CRC64 raw data hashing function
+    pub fn crc64(d: _Data) -> _Data {
+        crc::crc64::checksum_ecma(d.as_slice()).to_be_bytes().to_vec()
+    }
 
     /// MD5 raw data hashing function
     pub fn md5(d: _Data) -> _Data {
@@ -60,6 +87,27 @@ pub mod easy_hasher {
     }
 
     /* String hashing functions */
+
+    /// CRC8 string hashing function\
+    /// poly = 0x07, init = 0x00
+    pub fn string_crc8(s: String) -> _Data {
+        crc8(s.into_bytes())
+    }
+
+    /// CRC16/ARC string hashing function
+    pub fn string_crc16(s: String) -> _Data {
+        crc16(s.into_bytes())
+    }
+
+    /// CRC32 string hashing function
+    pub fn string_crc32(s: String) -> _Data {
+        crc32(s.into_bytes())
+    }
+
+    /// CRC64 string hashing function
+    pub fn string_crc64(s: String) -> _Data {
+        crc64(s.into_bytes())
+    }
 
     /// MD5 string hashing function
     pub fn string_md5(s: String) -> _Data {

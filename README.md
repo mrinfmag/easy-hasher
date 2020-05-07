@@ -9,10 +9,12 @@ Hashing functions (example with SHA256):
 <br/>
 Supported hashing algorithms: 
 
+* CRC8
+* CRC16
+* CRC32
+* CRC64
 * MD5
-
 * SHA1
-
 * SHA2
   - SHA224
   - SHA256
@@ -20,8 +22,6 @@ Supported hashing algorithms:
   - SHA512
   
 * SHA3 _(coming soon)_
-* CRC16 _(coming soon)_
-* CRC32 _(coming soon)_
 
 File hashing support is coming soon too.
 
