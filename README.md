@@ -20,8 +20,7 @@ Supported hashing algorithms:
   - SHA256
   - SHA384
   - SHA512
-  
-* SHA3 _(coming soon)_
+* SHA3 
 
 File hashing support is coming soon too.
 
