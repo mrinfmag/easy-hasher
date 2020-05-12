@@ -2,7 +2,7 @@
 pub mod easy_hasher {
     type _Byte = u8;
     type _Data = Vec<_Byte>;
-    use sha2::Digest;
+    use sha3::Digest;
     use sha1::Sha1;
 
     /// Performs the conversion from `u8` slice to `String`
@@ -14,7 +14,7 @@ pub mod easy_hasher {
     }
 
     /// Generic hashing function
-    fn sha2<T>(mut hasher: T, data: _Data) -> _Data where T: Digest {
+    fn sha3<T>(mut hasher: T, data: _Data) -> _Data where T: Digest {
         hasher.input(data.as_slice());
         hasher
             .result()
@@ -34,6 +34,8 @@ pub mod easy_hasher {
     }
 
     /* Raw data hashing functions */
+
+    // CRC
 
     /// CRC8 raw data hashing function\
     /// poly = 0x07, init = 0x00
@@ -56,37 +58,67 @@ pub mod easy_hasher {
         crc::crc64::checksum_ecma(d.as_slice()).to_be_bytes().to_vec()
     }
 
+    // MD5
+
     /// MD5 raw data hashing function
     pub fn md5(d: _Data) -> _Data {
         md5::compute(d).0.to_vec()
     }
+
+    // SHA1
 
     /// SHA-1 raw data hashing function
     pub fn sha1(d: _Data) -> _Data {
         sha(d)
     }
 
+    // SHA2
+
     /// SHA-224 raw data hashing function
     pub fn sha224(d: _Data) -> _Data {
-        sha2(sha2::Sha224::new(), d)
+        sha3(sha2::Sha224::new(), d)
     }
 
     /// SHA-256 raw data hashing function
     pub fn sha256(d: _Data) -> _Data {
-        sha2(sha2::Sha256::new(), d)
+        sha3(sha2::Sha256::new(), d)
     }
 
     /// SHA-384 raw data hashing function
     pub fn sha384(d: _Data) -> _Data {
-        sha2(sha2::Sha384::new(), d)
+        sha3(sha2::Sha384::new(), d)
     }
 
     /// SHA-512 raw data hashing function
     pub fn sha512(d: _Data) -> _Data {
-        sha2(sha2::Sha512::new(), d)
+        sha3(sha2::Sha512::new(), d)
+    }
+
+    // SHA3
+
+    /// SHA3-224 raw data hashing function
+    pub fn sha3_224(d: _Data) -> _Data {
+        sha3(sha3::Sha3_224::new(), d)
+    }
+
+    /// SHA3-256 raw data hashing function
+    pub fn sha3_256(d: _Data) -> _Data {
+        sha3(sha3::Sha3_256::new(), d)
+    }
+
+    /// SHA3-384 raw data hashing function
+    pub fn sha3_384(d: _Data) -> _Data {
+        sha3(sha3::Sha3_384::new(), d)
+    }
+
+    /// SHA3-512 raw data hashing function
+    pub fn sha3_512(d: _Data) -> _Data {
+        sha3(sha3::Sha3_512::new(), d)
     }
 
     /* String hashing functions */
+
+    // CRC
 
     /// CRC8 string hashing function\
     /// poly = 0x07, init = 0x00
@@ -109,15 +141,21 @@ pub mod easy_hasher {
         crc64(s.into_bytes())
     }
 
+    // MD5
+
     /// MD5 string hashing function
     pub fn string_md5(s: String) -> _Data {
         md5(s.into_bytes())
     }
 
+    // SHA1
+
     /// SHA-1 string hashing function
     pub fn string_sha1(s: String) -> _Data {
         sha1(s.into_bytes())
     }
+
+    // SHA2
 
     /// SHA-224 string hashing function
     pub fn string_sha224(s: String) -> _Data {
@@ -137,5 +175,27 @@ pub mod easy_hasher {
     /// SHA-512 string hashing function
     pub fn string_sha512(s: String) -> _Data {
         sha512(s.into_bytes())
+    }
+
+    // SHA3
+
+    /// SHA3-224 string hashing function
+    pub fn string_sha3_224(s: String) -> _Data {
+        sha3_224(s.into_bytes())
+    }
+
+    /// SHA3-256 string hashing function
+    pub fn string_sha3_256(s: String) -> _Data {
+        sha3_256(s.into_bytes())
+    }
+
+    /// SHA3-384 string hashing function
+    pub fn string_sha3_384(s: String) -> _Data {
+        sha3_384(s.into_bytes())
+    }
+
+    /// SHA3-512 string hashing function
+    pub fn string_sha3_512(s: String) -> _Data {
+        sha3_512(s.into_bytes())
     }
 }
