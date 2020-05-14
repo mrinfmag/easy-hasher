@@ -9,7 +9,7 @@ pub mod easy_hasher {
     pub fn hex_string(data: _Data) -> String {
         data
             .iter()
-            .map(|byte| format!("{:x}", byte))
+            .map(|byte| format!("{:02x}", byte))
             .collect()
     }
 
