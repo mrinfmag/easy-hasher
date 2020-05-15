@@ -2,10 +2,12 @@
 pub mod easy_hasher {
     type _Byte = u8;
     type _Data = Vec<_Byte>;
+    type _Input<'a> = &'a String;
+
     use sha3::Digest;
     use sha1::Sha1;
 
-    /// Performs the conversion from `u8` slice to `String`
+    /// Performs the conversion from `Vec<u8>` to `String`
     pub fn hex_string(data: _Data) -> String {
         data
             .iter()
@@ -122,80 +124,80 @@ pub mod easy_hasher {
 
     /// CRC8 string hashing function\
     /// poly = 0x07, init = 0x00
-    pub fn string_crc8(s: String) -> _Data {
-        crc8(s.into_bytes())
+    pub fn string_crc8(s: _Input) -> _Data {
+        crc8(s.clone().into_bytes())
     }
 
     /// CRC16/ARC string hashing function
-    pub fn string_crc16(s: String) -> _Data {
-        crc16(s.into_bytes())
+    pub fn string_crc16(s: _Input) -> _Data {
+        crc16(s.clone().into_bytes())
     }
 
     /// CRC32 string hashing function
-    pub fn string_crc32(s: String) -> _Data {
-        crc32(s.into_bytes())
+    pub fn string_crc32(s: _Input) -> _Data {
+        crc32(s.clone().into_bytes())
     }
 
     /// CRC64 string hashing function
-    pub fn string_crc64(s: String) -> _Data {
-        crc64(s.into_bytes())
+    pub fn string_crc64(s: _Input) -> _Data {
+        crc64(s.clone().into_bytes())
     }
 
     // MD5
 
     /// MD5 string hashing function
-    pub fn string_md5(s: String) -> _Data {
-        md5(s.into_bytes())
+    pub fn string_md5(s: _Input) -> _Data {
+        md5(s.clone().into_bytes())
     }
 
     // SHA1
 
     /// SHA-1 string hashing function
-    pub fn string_sha1(s: String) -> _Data {
-        sha1(s.into_bytes())
+    pub fn string_sha1(s: _Input) -> _Data {
+        sha1(s.clone().into_bytes())
     }
 
     // SHA2
 
     /// SHA-224 string hashing function
-    pub fn string_sha224(s: String) -> _Data {
-        sha224(s.into_bytes())
+    pub fn string_sha224(s: _Input) -> _Data {
+        sha224(s.clone().into_bytes())
     }
 
     /// SHA-256 string hashing function
-    pub fn string_sha256(s: String) -> _Data {
-        sha256(s.into_bytes())
+    pub fn string_sha256(s: _Input) -> _Data {
+        sha256(s.clone().into_bytes())
     }
 
     /// SHA-384 string hashing function
-    pub fn string_sha384(s: String) -> _Data {
-        sha384(s.into_bytes())
+    pub fn string_sha384(s: _Input) -> _Data {
+        sha384(s.clone().into_bytes())
     }
 
     /// SHA-512 string hashing function
-    pub fn string_sha512(s: String) -> _Data {
-        sha512(s.into_bytes())
+    pub fn string_sha512(s: _Input) -> _Data {
+        sha512(s.clone().into_bytes())
     }
 
     // SHA3
 
     /// SHA3-224 string hashing function
-    pub fn string_sha3_224(s: String) -> _Data {
-        sha3_224(s.into_bytes())
+    pub fn string_sha3_224(s: _Input) -> _Data {
+        sha3_224(s.clone().into_bytes())
     }
 
     /// SHA3-256 string hashing function
-    pub fn string_sha3_256(s: String) -> _Data {
-        sha3_256(s.into_bytes())
+    pub fn string_sha3_256(s: _Input) -> _Data {
+        sha3_256(s.clone().into_bytes())
     }
 
     /// SHA3-384 string hashing function
-    pub fn string_sha3_384(s: String) -> _Data {
-        sha3_384(s.into_bytes())
+    pub fn string_sha3_384(s: _Input) -> _Data {
+        sha3_384(s.clone().into_bytes())
     }
 
     /// SHA3-512 string hashing function
-    pub fn string_sha3_512(s: String) -> _Data {
-        sha3_512(s.into_bytes())
+    pub fn string_sha3_512(s: _Input) -> _Data {
+        sha3_512(s.clone().into_bytes())
     }
 }
