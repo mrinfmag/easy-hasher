@@ -1,6 +1,6 @@
 [package]
 name = "easy-hasher"
-version = "1.0.0-rc"
+version = "2.0.0-alpha" #next: beta? rc? release?
 authors = ["mrinfmag <mrinfmag@gmail.com>"]
 edition = "2018"
 description = "Easy hashing library"
@@ -20,3 +20,6 @@ sha3 = "0.8.2"
 crc = "1.8.1"
 crc8 = "0.1.1"
 crc16 = "0.4.0"
+
+[profile.dev]
+opt-level = 3

@@ -3,7 +3,67 @@ pub mod easy_hasher {
     type _Byte = u8;
     type _Data = Vec<_Byte>;
     type _Input<'a> = &'a String;
+    use sha3::Digest;
+    use sha1::Sha1;
 
+    mod filedata {
+        use std::fs;
+        use std::io::Read;
+        use crate::easy_hasher::_Data;
+
+        pub(crate) struct FileData {
+            fp: fs::File,
+            fm: fs::Metadata,
+        }
+
+        impl FileData {
+            pub fn open<P: AsRef<std::path::Path>>(p: P) -> Result<FileData, String> {
+                let _fp = fs::File::open(p);
+                let _file: fs::File;
+                match _fp {
+                    Ok(f) => _file = f,
+                    Err(e) => return Err(e.to_string())
+                };
+
+                let _fm = _file.metadata();
+                let _meta: fs::Metadata;
+                match _fm {
+                    Ok(m) => _meta = m,
+                    Err(e) => return Err(e.to_string())
+                }
+
+                Ok(
+                    FileData {
+                        fp: _file,
+                        fm: _meta,
+                    }
+                )
+            }
+
+            pub fn to_vec(mut self) -> Result<_Data, String> {
+                let mut vec = vec![0; self.fm.len() as usize];
+                let _res = self.fp.read(&mut vec);
+                match _res {
+                    Ok(r) => if vec.len() == r {
+                        Ok(vec)
+                    } else {
+                        Err("error reading from file".to_string())
+                    },
+                    Err(e) => Err(e.to_string()),
+                }
+            }
+
+            #[allow(dead_code)]
+            pub fn file(self) -> fs::File {
+                self.fp
+            }
+
+            #[allow(dead_code)]
+            pub fn metadata(self) -> fs::Metadata {
+                self.fm
+            }
+        }
+    }
 
     pub struct Hash {
         hash: _Data
@@ -29,18 +89,7 @@ pub mod easy_hasher {
         }
     }
 
-    use sha3::Digest;
-    use sha1::Sha1;
-
-    /// Performs the conversion from `Vec<u8>` to `String`
-    pub fn hex_string(data: _Data) -> String {
-        data
-            .iter()
-            .map(|byte| format!("{:02x}", byte))
-            .collect()
-    }
-
-    /// Generic SHA2/SHA3 hashing function
+    /// Generic hashing function
     fn sha3<T>(mut hasher: T, data: _Data) -> Hash where T: Digest {
         hasher.input(data.as_slice());
         Hash {
@@ -57,6 +106,7 @@ pub mod easy_hasher {
             hash: hasher.digest().bytes().to_vec()
         }
     }
+
     /// CRC8 raw data hashing function, based on polynomial and initial value
     pub fn param_crc8(data: _Data, poly: u8, init: u8) -> Hash {
         let mut crc8 = crc8::Crc8::create_msb(poly);
@@ -65,177 +115,256 @@ pub mod easy_hasher {
         }
     }
 
-    /* Raw data hashing functions */
+    /// Generic-algorithm file hasher
+    pub fn file_hash(hasher: fn(_Data) -> Hash, filename: _Input) -> Result<Hash, String> {
+        use filedata::*;
+        let rfd = FileData::open(filename);
+        let fd: FileData;
 
-    // CRC
+        match rfd {
+            Ok(data) => {
+                fd = data
+            },
+            Err(e) => {
+                return Err(e)
+            },
+        }
+
+        let rcont = fd.to_vec();
+        let cont: _Data;
+
+        match rcont {
+            Ok(bytes) => cont = bytes,
+            Err(e) => return Err(e),
+        }
+
+        Ok(hasher(cont))
+    }
+
+    /* file hashing */
+
+    /// CRC8 file hashing function\
+    /// poly = 0x07, init = 0x00
+    pub fn file_crc8(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_crc8, filename)
+    }
+
+    /// CRC16/ARC file hashing function
+    pub fn file_crc16(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_crc16, filename)
+    }
+
+    /// CRC32/IEEE file hashing function
+    pub fn file_crc32(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_crc32, filename)
+    }
+
+    /// CRC64/ECMA file hashing function
+    pub fn file_crc64(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_crc64, filename)
+    }
+
+    /// MD5 file hashing function
+    pub fn file_md5(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_md5, filename)
+    }
+
+    /// SHA-1 file hashing function
+    pub fn file_sha1(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha1, filename)
+    }
+
+    /// SHA-224 file hashing function
+    pub fn file_sha224(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha224, filename)
+    }
+
+    /// SHA-256 file hashing function
+    pub fn file_sha256(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha256, filename)
+    }
+
+    /// SHA-384 file hashing function
+    pub fn file_sha384(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha384, filename)
+    }
+
+    /// SHA-512 file hashing function
+    pub fn file_sha512(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha512, filename)
+    }
+
+    /// SHA3-224 file hashing function
+    pub fn file_sha3_224(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha3_224, filename)
+    }
+
+    /// SHA3-256 file hashing function
+    pub fn file_sha3_256(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha3_256, filename)
+    }
+
+    /// SHA3-384 file hashing function
+    pub fn file_sha3_384(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha3_384, filename)
+    }
+
+    /// SHA3-512 file hashing function
+    pub fn file_sha3_512(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha3_512, filename)
+    }
+
+    /* Raw data hashing functions */
 
     /// CRC8 raw data hashing function\
     /// poly = 0x07, init = 0x00
-    pub fn crc8(d: _Data) -> Hash {
+    pub fn raw_crc8(d: _Data) -> Hash {
         param_crc8(d, 0x7, 0x0)
     }
 
     /// CRC16/ARC raw data hashing function
-    pub fn crc16(d: _Data) -> Hash {
+    pub fn raw_crc16(d: _Data) -> Hash {
         Hash {
             hash: crc16::State::<crc16::ARC>::calculate(d.as_slice()).to_be_bytes().to_vec()
         }
     }
 
     /// CRC32 raw data hashing function
-    pub fn crc32(d: _Data) -> Hash {
+    pub fn raw_crc32(d: _Data) -> Hash {
         Hash {
             hash: crc::crc32::checksum_ieee(d.as_slice()).to_be_bytes().to_vec()
         }
     }
 
     /// CRC64 raw data hashing function
-    pub fn crc64(d: _Data) -> Hash {
+    pub fn raw_crc64(d: _Data) -> Hash {
         Hash {
             hash: crc::crc64::checksum_ecma(d.as_slice()).to_be_bytes().to_vec()
         }
     }
 
-    // MD5
-
     /// MD5 raw data hashing function
-    pub fn md5(d: _Data) -> Hash {
+    pub fn raw_md5(d: _Data) -> Hash {
         Hash {
             hash: md5::compute(d).0.to_vec()
         }
     }
 
-    // SHA1
-
-    /// SHA1 raw data hashing function
-    pub fn sha1(d: _Data) -> Hash {
+    /// SHA-1 raw data hashing function
+    pub fn raw_sha1(d: _Data) -> Hash {
         sha(d)
     }
 
-    // SHA2
-
     /// SHA-224 raw data hashing function
-    pub fn sha224(d: _Data) -> Hash {
+    pub fn raw_sha224(d: _Data) -> Hash {
         sha3(sha2::Sha224::new(), d)
     }
 
     /// SHA-256 raw data hashing function
-    pub fn sha256(d: _Data) -> Hash {
+    pub fn raw_sha256(d: _Data) -> Hash {
         sha3(sha2::Sha256::new(), d)
     }
 
     /// SHA-384 raw data hashing function
-    pub fn sha384(d: _Data) -> Hash {
+    pub fn raw_sha384(d: _Data) -> Hash {
         sha3(sha2::Sha384::new(), d)
     }
 
     /// SHA-512 raw data hashing function
-    pub fn sha512(d: _Data) -> Hash {
+    pub fn raw_sha512(d: _Data) -> Hash {
         sha3(sha2::Sha512::new(), d)
     }
 
-    // SHA3
-
     /// SHA3-224 raw data hashing function
-    pub fn sha3_224(d: _Data) -> Hash {
+    pub fn raw_sha3_224(d: _Data) -> Hash {
         sha3(sha3::Sha3_224::new(), d)
     }
 
     /// SHA3-256 raw data hashing function
-    pub fn sha3_256(d: _Data) -> Hash {
+    pub fn raw_sha3_256(d: _Data) -> Hash {
         sha3(sha3::Sha3_256::new(), d)
     }
 
     /// SHA3-384 raw data hashing function
-    pub fn sha3_384(d: _Data) -> Hash {
+    pub fn raw_sha3_384(d: _Data) -> Hash {
         sha3(sha3::Sha3_384::new(), d)
     }
 
     /// SHA3-512 raw data hashing function
-    pub fn sha3_512(d: _Data) -> Hash {
+    pub fn raw_sha3_512(d: _Data) -> Hash {
         sha3(sha3::Sha3_512::new(), d)
     }
 
     /* String hashing functions */
 
-    // CRC
-
     /// CRC8 string hashing function\
     /// poly = 0x07, init = 0x00
-    pub fn string_crc8(s: _Input) -> Hash {
-        crc8(s.clone().into_bytes())
+    pub fn crc8(s: _Input) -> Hash {
+        raw_crc8(s.clone().into_bytes())
     }
 
     /// CRC16/ARC string hashing function
-    pub fn string_crc16(s: _Input) -> Hash {
-        crc16(s.clone().into_bytes())
+    pub fn crc16(s: _Input) -> Hash {
+        raw_crc16(s.clone().into_bytes())
     }
 
     /// CRC32 string hashing function
-    pub fn string_crc32(s: _Input) -> Hash {
-        crc32(s.clone().into_bytes())
+    pub fn crc32(s: _Input) -> Hash {
+        raw_crc32(s.clone().into_bytes())
     }
 
     /// CRC64 string hashing function
-    pub fn string_crc64(s: _Input) -> Hash {
-        crc64(s.clone().into_bytes())
+    pub fn crc64(s: _Input) -> Hash {
+        raw_crc64(s.clone().into_bytes())
     }
-
-    // MD5
 
     /// MD5 string hashing function
-    pub fn string_md5(s: _Input) -> Hash {
-        md5(s.clone().into_bytes())
+    pub fn md5(s: _Input) -> Hash {
+        raw_md5(s.clone().into_bytes())
     }
 
-    // SHA1
-
-    /// SHA1 string hashing function
-    pub fn string_sha1(s: _Input) -> Hash {
-        sha1(s.clone().into_bytes())
+    /// SHA-1 string hashing function
+    pub fn sha1(s: _Input) -> Hash {
+        raw_sha1(s.clone().into_bytes())
     }
-
-    // SHA2
 
     /// SHA-224 string hashing function
-    pub fn string_sha224(s: _Input) -> Hash {
-        sha224(s.clone().into_bytes())
+    pub fn sha224(s: _Input) -> Hash {
+        raw_sha224(s.clone().into_bytes())
     }
 
     /// SHA-256 string hashing function
-    pub fn string_sha256(s: _Input) -> Hash {
-        sha256(s.clone().into_bytes())
+    pub fn sha256(s: _Input) -> Hash {
+        raw_sha256(s.clone().into_bytes())
     }
 
     /// SHA-384 string hashing function
-    pub fn string_sha384(s: _Input) -> Hash {
-        sha384(s.clone().into_bytes())
+    pub fn sha384(s: _Input) -> Hash {
+        raw_sha384(s.clone().into_bytes())
     }
 
     /// SHA-512 string hashing function
-    pub fn string_sha512(s: _Input) -> Hash {
-        sha512(s.clone().into_bytes())
+    pub fn sha512(s: _Input) -> Hash {
+        raw_sha512(s.clone().into_bytes())
     }
 
-    // SHA3
-
     /// SHA3-224 string hashing function
-    pub fn string_sha3_224(s: _Input) -> Hash {
-        sha3_224(s.clone().into_bytes())
+    pub fn sha3_224(s: _Input) -> Hash {
+        raw_sha3_224(s.clone().into_bytes())
     }
 
     /// SHA3-256 string hashing function
-    pub fn string_sha3_256(s: _Input) -> Hash {
-        sha3_256(s.clone().into_bytes())
+    pub fn sha3_256(s: _Input) -> Hash {
+        raw_sha3_256(s.clone().into_bytes())
     }
 
     /// SHA3-384 string hashing function
-    pub fn string_sha3_384(s: _Input) -> Hash {
-        sha3_384(s.clone().into_bytes())
+    pub fn sha3_384(s: _Input) -> Hash {
+        raw_sha3_384(s.clone().into_bytes())
     }
 
     /// SHA3-512 string hashing function
-    pub fn string_sha3_512(s: _Input) -> Hash {
-        sha3_512(s.clone().into_bytes())
+    pub fn sha3_512(s: _Input) -> Hash {
+        raw_sha3_512(s.clone().into_bytes())
     }
 }
