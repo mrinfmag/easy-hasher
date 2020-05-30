@@ -3,9 +3,9 @@
 ### Easy hashing library for Rust
 
 Hashing functions (all examples using SHA256):
-- String: ```sha256(&input)```
-- File: ```file_sha256(&input)```
-- Raw binary data: ```raw_sha256(input.clone())```
+- String: ```sha256(&input)```<sup>1</sup>
+- File: ```file_sha256(&input)```<sup>1</sup>
+- Raw binary data: ```raw_sha256(input.clone())```<sup>2</sup>
 
 <br/>
 Supported algorithms: 
@@ -83,3 +83,7 @@ fn main() {
     println!("SHA256({}) = {}", path, hash.to_hex_string());
 }
 ```
+
+<br/>
+<sup>1</sup>: Passing by reference to avoid E0382 (borrow of moved value) <br/>
+<sup>2</sup>: Using .clone() function for the same reason (and to simplify code)
