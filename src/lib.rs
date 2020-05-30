@@ -40,6 +40,7 @@ pub mod easy_hasher {
                 )
             }
 
+            /// Get file contents as byte vector
             pub fn to_vec(mut self) -> Result<_Data, String> {
                 let mut vec = vec![0; self.fm.len() as usize];
                 let _res = self.fp.read(&mut vec);
@@ -53,11 +54,13 @@ pub mod easy_hasher {
                 }
             }
 
+            /// Get file object
             #[allow(dead_code)]
             pub fn file(self) -> fs::File {
                 self.fp
             }
 
+            /// Get file metadata object
             #[allow(dead_code)]
             pub fn metadata(self) -> fs::Metadata {
                 self.fm
@@ -89,7 +92,7 @@ pub mod easy_hasher {
         }
     }
 
-    /// Generic hashing function
+    /// Generic SHA2/SHA3 hashing function
     fn sha3<T>(mut hasher: T, data: _Data) -> Hash where T: Digest {
         hasher.input(data.as_slice());
         Hash {
