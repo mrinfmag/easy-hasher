@@ -5,6 +5,7 @@ pub mod easy_hasher {
     type _Input<'a> = &'a String;
     use sha3::Digest;
     use sha1::Sha1;
+    use std::borrow::Borrow;
 
     mod filedata {
         use std::fs;
@@ -40,7 +41,6 @@ pub mod easy_hasher {
                 )
             }
 
-            /// Get file contents as byte vector
             pub fn to_vec(mut self) -> Result<_Data, String> {
                 let mut vec = vec![0; self.fm.len() as usize];
                 let _res = self.fp.read(&mut vec);
@@ -54,13 +54,11 @@ pub mod easy_hasher {
                 }
             }
 
-            /// Get file object
             #[allow(dead_code)]
             pub fn file(self) -> fs::File {
                 self.fp
             }
 
-            /// Get file metadata object
             #[allow(dead_code)]
             pub fn metadata(self) -> fs::Metadata {
                 self.fm
@@ -69,7 +67,8 @@ pub mod easy_hasher {
     }
 
     pub struct Hash {
-        hash: _Data
+        hash: _Data,
+        length: usize
     }
 
     impl Hash {
@@ -81,6 +80,13 @@ pub mod easy_hasher {
                 .collect()
         }
 
+        pub fn from_vec(data: &_Data) -> Hash {
+            Hash {
+                hash: data.clone(),
+                length: data.len()
+            }
+        }
+
         /// Express hash as hex string
         pub fn to_hex_string(&self) -> String {
             Hash::hex_string(&self.hash)
@@ -90,32 +96,36 @@ pub mod easy_hasher {
         pub fn to_vec(&self) -> _Data {
             self.hash.clone()
         }
+
+        pub fn len(&self) -> usize {
+            self.length
+        }
     }
 
-    /// Generic SHA2/SHA3 hashing function
+    /// Generic hashing function
     fn sha3<T>(mut hasher: T, data: _Data) -> Hash where T: Digest {
         hasher.input(data.as_slice());
-        Hash {
-            hash: hasher
-                .result()
-                .to_vec()
-        }
+        let result = hasher
+            .result()
+            .to_vec();
+        Hash::from_vec(&result)
     }
 
     fn sha(data: _Data) -> Hash {
         let mut hasher = Sha1::new();
         hasher.update(data.as_slice());
-        Hash {
-            hash: hasher.digest().bytes().to_vec()
-        }
+        let result = hasher
+            .digest()
+            .bytes()
+            .to_vec();
+        Hash::from_vec(&result)
     }
 
     /// CRC8 raw data hashing function, based on polynomial and initial value
     pub fn param_crc8(data: _Data, poly: u8, init: u8) -> Hash {
         let mut crc8 = crc8::Crc8::create_msb(poly);
-        Hash {
-            hash: vec![crc8.calc(data.as_slice(), data.len() as i32, init)]
-        }
+        let result = vec![crc8.calc(data.as_slice(), data.len() as i32, init)];
+        Hash::from_vec(&result)
     }
 
     /// Generic-algorithm file hasher
@@ -129,6 +139,7 @@ pub mod easy_hasher {
                 fd = data
             },
             Err(e) => {
+                println!("{}", e);
                 return Err(e)
             },
         }
@@ -183,8 +194,8 @@ pub mod easy_hasher {
     }
 
     /// SHA-256 file hashing function
-    pub fn file_sha256(filename: _Input) -> Result<Hash, String> {
-        file_hash(raw_sha256, filename)
+    pub fn file_sha256(filename: String) -> Result<Hash, String> {
+        file_hash(raw_sha256, filename.borrow())
     }
 
     /// SHA-384 file hashing function
@@ -227,30 +238,37 @@ pub mod easy_hasher {
 
     /// CRC16/ARC raw data hashing function
     pub fn raw_crc16(d: _Data) -> Hash {
-        Hash {
-            hash: crc16::State::<crc16::ARC>::calculate(d.as_slice()).to_be_bytes().to_vec()
-        }
+        let result = crc16::State::<crc16::ARC>::calculate(d.as_slice())
+            .to_be_bytes()
+            .to_vec()
+            .clone();
+        Hash::from_vec(&result)
     }
 
     /// CRC32 raw data hashing function
     pub fn raw_crc32(d: _Data) -> Hash {
-        Hash {
-            hash: crc::crc32::checksum_ieee(d.as_slice()).to_be_bytes().to_vec()
-        }
+        let result = crc::crc32::checksum_ieee(d.as_slice())
+            .to_be_bytes()
+            .to_vec()
+            .clone();
+        Hash::from_vec(&result)
     }
 
     /// CRC64 raw data hashing function
     pub fn raw_crc64(d: _Data) -> Hash {
-        Hash {
-            hash: crc::crc64::checksum_ecma(d.as_slice()).to_be_bytes().to_vec()
-        }
+        let result = crc::crc64::checksum_ecma(d.as_slice())
+            .to_be_bytes()
+            .to_vec()
+            .clone();
+        Hash::from_vec(&result)
     }
 
     /// MD5 raw data hashing function
     pub fn raw_md5(d: _Data) -> Hash {
-        Hash {
-            hash: md5::compute(d).0.to_vec()
-        }
+        let result = md5::compute(d)
+            .0
+            .to_vec();
+        Hash::from_vec(&result)
     }
 
     /// SHA-1 raw data hashing function
