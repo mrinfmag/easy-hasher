@@ -30,8 +30,6 @@ Supported algorithms:
   - SHA3-384
   - SHA3-512
 
-File hashing is now supported! 
-
 #### Code examples:
 String hash:
 
