@@ -121,6 +121,14 @@ pub mod easy_hasher {
         Hash::from_vec(&result)
     }
 
+    fn md2n<T>(mut hasher: T, data: _Data) -> Hash where T: Digest {
+        hasher.input(data.as_slice());
+        let result = hasher
+            .result()
+            .to_vec();
+        Hash::from_vec(&result)
+    }
+
     /// CRC8 raw data hashing function, based on polynomial and initial value
     pub fn param_crc8(data: _Data, poly: u8, init: u8) -> Hash {
         let mut crc8 = crc8::Crc8::create_msb(poly);
@@ -263,6 +271,18 @@ pub mod easy_hasher {
         Hash::from_vec(&result)
     }
 
+    /// MD2 raw data hashing function
+    pub fn raw_md2(d: _Data) -> Hash {
+        use md2::Md2;
+        md2n(Md2::new(), d)
+    }
+
+    /// MD4 raw data hashing function
+    pub fn raw_md4(d: _Data) -> Hash {
+        use md4::Md4;
+        md2n(Md4::new(), d)
+    }
+
     /// MD5 raw data hashing function
     pub fn raw_md5(d: _Data) -> Hash {
         let result = md5::compute(d)
@@ -337,6 +357,16 @@ pub mod easy_hasher {
     /// CRC64 string hashing function
     pub fn crc64(s: _Input) -> Hash {
         raw_crc64(s.clone().into_bytes())
+    }
+
+    /// MD5 string hashing function
+    pub fn md2(s: _Input) -> Hash {
+        raw_md2(s.clone().into_bytes())
+    }
+
+    /// MD5 string hashing function
+    pub fn md4(s: _Input) -> Hash {
+        raw_md4(s.clone().into_bytes())
     }
 
     /// MD5 string hashing function

@@ -15,6 +15,8 @@ Supported algorithms:
   - CRC-16
   - CRC-32
   - CRC-64
+* MD2
+* MD4
 * MD5
 * SHA1
 * SHA2
