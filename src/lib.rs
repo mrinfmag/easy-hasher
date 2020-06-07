@@ -186,6 +186,16 @@ pub mod easy_hasher {
         file_hash(raw_crc64, filename)
     }
 
+    /// MD2 file hashing function
+    pub fn file_md2(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_md2, filename)
+    }
+
+    /// MD4 file hashing function
+    pub fn file_md4(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_md4, filename)
+    }
+
     /// MD5 file hashing function
     pub fn file_md5(filename: _Input) -> Result<Hash, String> {
         file_hash(raw_md5, filename)
