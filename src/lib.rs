@@ -1,3 +1,4 @@
+
 /// Easy Hasher module
 pub mod easy_hasher {
     type _Byte = u8;
@@ -163,7 +164,7 @@ pub mod easy_hasher {
         Ok(hasher(cont))
     }
 
-    /* file hashing */
+    // FILE
 
     /// CRC8 file hashing function\
     /// poly = 0x07, init = 0x00
@@ -184,16 +185,6 @@ pub mod easy_hasher {
     /// CRC64/ECMA file hashing function
     pub fn file_crc64(filename: _Input) -> Result<Hash, String> {
         file_hash(raw_crc64, filename)
-    }
-
-    /// MD2 file hashing function
-    pub fn file_md2(filename: _Input) -> Result<Hash, String> {
-        file_hash(raw_md2, filename)
-    }
-
-    /// MD4 file hashing function
-    pub fn file_md4(filename: _Input) -> Result<Hash, String> {
-        file_hash(raw_md4, filename)
     }
 
     /// MD5 file hashing function
@@ -246,7 +237,28 @@ pub mod easy_hasher {
         file_hash(raw_sha3_512, filename)
     }
 
-    /* Raw data hashing functions */
+    /// Keccak-224 file hashing function
+    pub fn file_keccak_224(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_keccak_224, filename)
+    }
+
+    /// Keccak-256 file hashing function
+    pub fn file_keccak_256(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_keccak_256, filename)
+    }
+
+    /// Keccak-384 file hashing function
+    pub fn file_keccak_384(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_keccak_384, filename)
+    }
+
+    /// Keccak-512 file hashing function
+    pub fn file_keccak_512(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_keccak_512, filename)
+    }
+
+
+    // BINARY DATA
 
     /// CRC8 raw data hashing function\
     /// poly = 0x07, init = 0x00
@@ -346,7 +358,27 @@ pub mod easy_hasher {
         sha3(sha3::Sha3_512::new(), d)
     }
 
-    /* String hashing functions */
+    /// Keccak-224 raw data hashing function
+    pub fn raw_keccak224(d: _Data) -> Hash {
+        sha3(sha3::Keccak224::new(), d)
+    }
+
+    /// Keccak-256 raw data hashing function
+    pub fn raw_keccak256(d: _Data) -> Hash {
+        sha3(sha3::Keccak256::new(), d)
+    }
+
+    /// Keccak-384 raw data hashing function
+    pub fn raw_keccak384(d: _Data) -> Hash {
+        sha3(sha3::Keccak384::new(), d)
+    }
+
+    /// Keccak-512 raw data hashing function
+    pub fn raw_keccak512(d: _Data) -> Hash {
+        sha3(sha3::Keccak512::new(), d)
+    }
+
+    // STRING
 
     /// CRC8 string hashing function\
     /// poly = 0x07, init = 0x00
@@ -427,5 +459,25 @@ pub mod easy_hasher {
     /// SHA3-512 string hashing function
     pub fn sha3_512(s: _Input) -> Hash {
         raw_sha3_512(s.clone().into_bytes())
+    }
+
+    /// Keccak-224 string hashing function
+    pub fn keccak224(s: _Input) -> Hash {
+        raw_keccak224(s.clone().into_bytes())
+    }
+
+    /// Keccak-256 string hashing function
+    pub fn keccak256(s: _Input) -> Hash {
+        raw_keccak256(s.clone().into_bytes())
+    }
+
+    /// Keccak-384 string hashing function
+    pub fn keccak384(s: _Input) -> Hash {
+        raw_keccak384(s.clone().into_bytes())
+    }
+
+    /// Keccak-512 string hashing function
+    pub fn keccak512(s: _Input) -> Hash {
+        raw_keccak512(s.clone().into_bytes())
     }
 }

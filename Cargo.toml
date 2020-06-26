@@ -1,12 +1,12 @@
 [package]
 name = "easy-hasher"
-version = "2.1.1"
+version = "2.2.0"
 authors = ["mrinfmag <mrinfmag@gmail.com>"]
 edition = "2018"
 description = "Easy hashing library"
 repository = "https://github.com/mrinfmag/easy-hasher"
 license = "MIT"
-keywords = ["hash", "sha2", "sha3", "md5", "crc"]
+keywords = ["hash", "sha", "keccak", "md5", "crc"]
 categories = ["cryptography"]
 readme = "README.md"
 

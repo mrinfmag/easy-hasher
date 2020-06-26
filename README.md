@@ -29,8 +29,13 @@ Supported algorithms:
   - SHA3-256
   - SHA3-384
   - SHA3-512
+* SHA3 
+  - Keccak224
+  - Keccak256
+  - Keccak384
+  - Keccak512
   
-Keccak functions coming soon
+SHAKE128 and SHAKE256 are coming soon!
 
 #### Code examples:
 String hash:
