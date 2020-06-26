@@ -239,22 +239,22 @@ pub mod easy_hasher {
 
     /// Keccak-224 file hashing function
     pub fn file_keccak_224(filename: _Input) -> Result<Hash, String> {
-        file_hash(raw_keccak_224, filename)
+        file_hash(raw_keccak224, filename)
     }
 
     /// Keccak-256 file hashing function
     pub fn file_keccak_256(filename: _Input) -> Result<Hash, String> {
-        file_hash(raw_keccak_256, filename)
+        file_hash(raw_keccak256, filename)
     }
 
     /// Keccak-384 file hashing function
     pub fn file_keccak_384(filename: _Input) -> Result<Hash, String> {
-        file_hash(raw_keccak_384, filename)
+        file_hash(raw_keccak384, filename)
     }
 
     /// Keccak-512 file hashing function
     pub fn file_keccak_512(filename: _Input) -> Result<Hash, String> {
-        file_hash(raw_keccak_512, filename)
+        file_hash(raw_keccak512, filename)
     }
 
 
