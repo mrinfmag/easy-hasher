@@ -24,6 +24,8 @@ Supported algorithms:
   - SHA-256
   - SHA-384
   - SHA-512
+  - SHA-512/224
+  - SHA-512/256
 * SHA3 
   - SHA3-224
   - SHA3-256

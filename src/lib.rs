@@ -217,6 +217,16 @@ pub mod easy_hasher {
         file_hash(raw_sha512, filename)
     }
 
+    /// SHA-512/224 file hashing function
+    pub fn file_sha512_224(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha512_224, filename)
+    }
+
+    /// SHA-512/256 file hashing function
+    pub fn file_sha512_256(filename: _Input) -> Result<Hash, String> {
+        file_hash(raw_sha512_256, filename)
+    }
+
     /// SHA3-224 file hashing function
     pub fn file_sha3_224(filename: _Input) -> Result<Hash, String> {
         file_hash(raw_sha3_224, filename)
@@ -338,6 +348,16 @@ pub mod easy_hasher {
         sha3(sha2::Sha512::new(), d)
     }
 
+    /// SHA-512/224 raw data hashing function
+    pub fn raw_sha512_224(d: _Data) -> Hash {
+        sha3(sha2::Sha512Trunc224::new(), d)
+    }
+
+    /// SHA-512/256 raw data hashing function
+    pub fn raw_sha512_256(d: _Data) -> Hash {
+        sha3(sha2::Sha512Trunc256::new(), d)
+    }
+
     /// SHA3-224 raw data hashing function
     pub fn raw_sha3_224(d: _Data) -> Hash {
         sha3(sha3::Sha3_224::new(), d)
@@ -439,6 +459,16 @@ pub mod easy_hasher {
     /// SHA-512 string hashing function
     pub fn sha512(s: _Input) -> Hash {
         raw_sha512(s.clone().into_bytes())
+    }
+
+    /// SHA-512/224 string hashing function
+    pub fn sha512_224(s: _Input) -> Hash {
+        raw_sha512_224(s.clone().into_bytes())
+    }
+
+    /// SHA-512/256 string hashing function
+    pub fn sha512_256(s: _Input) -> Hash {
+        raw_sha512_256(s.clone().into_bytes())
     }
 
     /// SHA3-224 string hashing function
